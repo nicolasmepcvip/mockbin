@@ -2,45 +2,60 @@ extends layout.pug
 
 block content
   div.container
-    if (!data)
+    //- Check if data exists
+    if !data
       div.alert.alert-warning No data
 
     else
       div#preview
         header
           ul.nav.nav-tabs
+            //- Loop through data types and generate tabs
             for key in ['json', 'yaml', 'xml']
-              li: a(href="#" + key, data-toggle='tab')= key.toUpperCase()
+              li
+                a(href="#" + key, data-toggle='tab')= key.toUpperCase()
 
+        //- Content for each tab
         div.tab-content
           for key in ['json', 'yaml', 'xml']
             div(id=key).tab-pane.active.fade.in
+              //- Button to copy content
               button(data-clipboard-target=key + '-code').btn.btn-default.btn-xs.btn-clipboard
                 i.fa.fa-copy
                 span Copy to Clipboard
+              //- Display the data content
               pre
                 code(id=key + '-code')= data[key]
-    br
 
-    p: em You're viewing the HTML output, try calling this endpoint with an #[code Accept] header with one of the values: #[code application/x-yaml], #[code application/json], #[code application/xml]
+    //- Additional details about the endpoint
+    br
+    p 
+      em You're viewing the HTML output, try calling this endpoint with an 
+        code Accept 
+        | header with one of the values: 
+        code application/x-yaml
+        | , 
+        code application/json
+        | , 
+        code application/xml
 
 block scripts
   script(type='text/javascript').
     $(function() {
-      // configure Zero Clipboard
+      //- ZeroClipboard configuration
       ZeroClipboard.config({
         swfPath: '//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.swf',
         forceHandCursor: true,
         trustedDomains: [window.location.host, "cdnjs.cloudflare.com"]
-      })
+      });
 
-      // attach Zero Clipboard
-      new ZeroClipboard($('.btn-clipboard'))
+      //- Initialize ZeroClipboard
+      new ZeroClipboard($('.btn-clipboard'));
 
-      // select first tab
+      //- Activate the first tab
       $('.nav-tabs a:first').tab('show');
 
-      // highlight the code
+      //- Highlight code blocks
       $('.tab-content pre code').each(function (i, block) {
         hljs.highlightBlock(block);
       });

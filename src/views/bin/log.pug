@@ -1,6 +1,6 @@
 extends ../layout.pug
 
-mixin method (method)
+mixin method(method)
   - var mapping = { GET: 'success', POST: 'primary', PUT: 'info', PATCH: 'warning' , DELETE: 'danger' }
   - var className = mapping[method] ? mapping[method] : 'default'
 
@@ -11,7 +11,8 @@ block content
     div.btn-group.pull-right.hidden-xs
       a(href= '/bin/' + req.params.uuid + '/view').btn.btn-primary View Details
 
-    h3 Bin History: #[code= req.params.uuid]
+    h3 Bin History: 
+      code= req.params.uuid
 
     div.visible-xs
       a(href= '/bin/' + req.params.uuid + '/view').btn.btn-block.btn-primary View Details
@@ -20,7 +21,9 @@ block content
 
     div.alert.alert-warning.visible-xs
       strong Warning &nbsp;
-      span Best viewed on a desktop screen, with minimum #[code 800px] width.
+      span Best viewed on a desktop screen, with minimum 
+        code 800px 
+        | width.
 
     table.table.table-hover
       thead
@@ -34,28 +37,29 @@ block content
 
       tbody
         for entry, id in data.raw.log.entries
-          tr(data-id= id)
+          tr(data-id=id)
             td.method
               +method(entry.request.method)
 
             td= entry.request.url.slice(entry.request.url.indexOf('/bin/'))
-
-            td #{entry.request.bodySize / 1000} KB
-
+            td= (entry.request.bodySize / 1000) + " KB"
             td.date= moment(entry.startedDateTime).fromNow()
             td.ip= entry.clientIPAddress
             td.action.text-right
               div.btn-group.btn-group-sm
-                a.btn.btn-default(href='#entry-' + id) 
+                a.btn.btn-default(href='#entry-' + id)
                   i.fa.fa-link
-                button.btn.btn-default(data-id=id) 
+                button.btn.btn-default(data-id=id)
                   i.fa.fa-chevron-down
 
-          tr.data(id='entry-#{id}')
-            td(colspan= 6)
+          tr.data(id='entry-' + id)
+            td(colspan=6)
               div.row
                 div.col-sm-6
-                  h4 Request Details #[small in #[a(href="https://ahmadnassri.github.io/har-resources/" target="_blank") HAR] format]
+                  h4 Request Details 
+                    small in 
+                      a(href="https://ahmadnassri.github.io/har-resources/" target="_blank") HAR
+                      | format
 
                   div#preview
                     pre: code= JSON.stringify(entry.request, null, 2)
@@ -65,7 +69,6 @@ block content
 
                   div#preview
                     pre: code= entry.request.postData && entry.request.postData.text ? entry.request.postData.text : 'No body was sent'
-
 
 block scripts
   script.
