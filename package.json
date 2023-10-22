@@ -37,7 +37,7 @@
     "url": "https://github.com/Kong/mockbin/issues"
   },
   "config": {
-    "port": 8080,
+    "port": 80,
     "quiet": false,
     "redis": "redis://127.0.0.1:6379",
     "commitizen": {
