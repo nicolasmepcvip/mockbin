@@ -18,3 +18,8 @@ services:
       - "6379:6379"
     command: sh -c "sysctl vm.overcommit_memory=1 && redis-server"
     privileged: true
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
