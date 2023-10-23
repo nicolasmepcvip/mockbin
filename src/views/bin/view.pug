@@ -4,21 +4,21 @@ block content
   div(data-page="bin/view").container
     div.row
       div.col-sm-9
-        h3 Bin Identifier: 
+        h3 Bin Identifier:
           code= req.params.uuid
         div#preview
           pre
             code= data.json
       div.col-sm-3
         h3 Next Steps
-        a(href=`/bin/${req.params.uuid}#apiembed`).btn.btn-block.btn-primary 
-          span.badge 1 
+        a(href=`/bin/${req.params.uuid}#apiembed`).btn.btn-block.btn-primary
+          span.badge 1
           | &nbsp; Send Some Requests
-        a(href=`/bin/${req.params.uuid}`).btn.btn-block.btn-primary 
-          span.badge 2 
+        a(href=`/bin/${req.params.uuid}`).btn.btn-block.btn-primary
+          span.badge 2
           | &nbsp; Visit in Browser
-        a(href=`/bin/${req.params.uuid}/log`).btn.btn-block.btn-primary 
-          span.badge 3 
+        a(href=`/bin/${req.params.uuid}/log`).btn.btn-block.btn-primary
+          span.badge 3
           | &nbsp; View History
     br
     h4#apiembed Send Some Requests:

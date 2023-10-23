@@ -2,14 +2,14 @@
 
 'use strict'
 
-var cookieParser = require('cookie-parser')
-var express = require('express')
-var mockbin = require('../../lib')
-var path = require('path')
-var unirest = require('unirest')
+const cookieParser = require('cookie-parser')
+const express = require('express')
+const mockbin = require('../../lib')
+const path = require('path')
+const unirest = require('unirest')
 
-var app = express()
-var server = null
+const app = express()
+let server = null
 
 require('should')
 
@@ -23,7 +23,9 @@ describe('HTTP', function () {
     app.use(cookieParser())
 
     app.use('/', mockbin())
-    server = app.listen(3000, function () { done() })
+    server = app.listen(3000, function () {
+      done()
+    })
   })
 
   after(function () {
@@ -31,42 +33,52 @@ describe('HTTP', function () {
   })
 
   it('home page responds with html content', function (done) {
-    var req = unirest.get('http://localhost:3000/')
+    const req = unirest.get('http://localhost:3000/')
 
     req.headers('Accept', 'text/html')
 
     req.end(function (res) {
       res.status.should.equal(200)
-      res.headers.should.have.property('content-type').and.equal('text/html; charset=utf-8')
+      res.headers.should.have
+        .property('content-type')
+        .and.equal('text/html; charset=utf-8')
       done()
     })
   })
 
   it('should send CORS headers', function (done) {
-    var req = unirest.options('http://localhost:3000/request')
+    const req = unirest.options('http://localhost:3000/request')
 
     req.end(function (res) {
-      res.headers.should.have.property('access-control-allow-origin').and.equal('*')
-      res.headers.should.have.property('access-control-allow-methods').and.equal('OPTIONS')
-      res.headers.should.have.property('access-control-allow-headers').and.equal('host,content-length,connection')
+      res.headers.should.have
+        .property('access-control-allow-origin')
+        .and.equal('*')
+      res.headers.should.have
+        .property('access-control-allow-methods')
+        .and.equal('OPTIONS')
+      res.headers.should.have
+        .property('access-control-allow-headers')
+        .and.equal('host,content-length,connection')
       done()
     })
   })
 
   it('GET / responds with hello message', function (done) {
-    var req = unirest.get('http://localhost:3000/')
+    const req = unirest.get('http://localhost:3000/')
 
     req.headers('Accept', 'text/plain')
 
     req.end(function (res) {
-      res.headers.should.have.property('content-type').and.equal('text/plain; charset=utf-8')
+      res.headers.should.have
+        .property('content-type')
+        .and.equal('text/plain; charset=utf-8')
       res.body.should.equal('Hello World!')
       done()
     })
   })
 
   it('GET /ip should return local ip', function (done) {
-    var req = unirest.get('http://localhost:3000/ip')
+    const req = unirest.get('http://localhost:3000/ip')
 
     req.headers('Accept', 'text/plain')
 
@@ -77,7 +89,7 @@ describe('HTTP', function () {
   })
 
   it('GET /ips should return proxied IPs', function (done) {
-    var req = unirest.get('http://localhost:3000/ips')
+    const req = unirest.get('http://localhost:3000/ips')
 
     req.headers({
       Accept: 'application/json',
@@ -93,7 +105,7 @@ describe('HTTP', function () {
   })
 
   it('GET /agent should return user-agent string', function (done) {
-    var req = unirest.get('http://localhost:3000/agent')
+    const req = unirest.get('http://localhost:3000/agent')
 
     req.headers({
       Accept: 'text/plain',
@@ -108,7 +120,7 @@ describe('HTTP', function () {
   })
 
   it('GET /status/:code should return custom status code', function (done) {
-    var req = unirest.get('http://localhost:3000/status/900')
+    const req = unirest.get('http://localhost:3000/status/900')
 
     req.headers('Accept', 'application/json')
 
@@ -121,7 +133,7 @@ describe('HTTP', function () {
   })
 
   it('GET /status/:code/:reason should return custom status code + reason', function (done) {
-    var req = unirest.get('http://localhost:3000/status/900/reason')
+    const req = unirest.get('http://localhost:3000/status/900/reason')
 
     req.headers('Accept', 'application/json')
 
@@ -134,7 +146,9 @@ describe('HTTP', function () {
   })
 
   it('GET /status/:code/:reason should allow spaces in reason text', function (done) {
-    var req = unirest.get('http://localhost:3000/status/900/because of reasons')
+    const req = unirest.get(
+      'http://localhost:3000/status/900/because of reasons'
+    )
 
     req.headers('Accept', 'application/json')
 
@@ -147,7 +161,9 @@ describe('HTTP', function () {
   })
 
   it('GET /status/:code/:reason should replace plus signs in reason text with spaces', function (done) {
-    var req = unirest.get('http://localhost:3000/status/900/because+of+reasons')
+    const req = unirest.get(
+      'http://localhost:3000/status/900/because+of+reasons'
+    )
 
     req.headers('Accept', 'application/json')
 
@@ -160,7 +176,7 @@ describe('HTTP', function () {
   })
 
   it('GET /headers should return all headers', function (done) {
-    var req = unirest.get('http://localhost:3000/headers')
+    const req = unirest.get('http://localhost:3000/headers')
 
     req.headers({
       Accept: 'application/json',
@@ -168,14 +184,17 @@ describe('HTTP', function () {
     })
 
     req.end(function (res) {
-      res.body.headers.should.containEql({ name: 'x-custom-header', value: 'ALL YOUR BASE ARE BELONG TO US' })
+      res.body.headers.should.containEql({
+        name: 'x-custom-header',
+        value: 'ALL YOUR BASE ARE BELONG TO US'
+      })
 
       done()
     })
   })
 
   it('GET /header/:name should return specific headers', function (done) {
-    var req = unirest.get('http://localhost:3000/header/X-Custom-Header')
+    const req = unirest.get('http://localhost:3000/header/X-Custom-Header')
 
     req.headers({
       Accept: 'application/json',
@@ -190,7 +209,7 @@ describe('HTTP', function () {
   })
 
   it('GET /cookies should return all cookies', function (done) {
-    var req = unirest.get('http://localhost:3000/cookies')
+    const req = unirest.get('http://localhost:3000/cookies')
 
     req.headers({
       Accept: 'application/json',
@@ -198,14 +217,17 @@ describe('HTTP', function () {
     })
 
     req.end(function (res) {
-      res.body.should.containEql({ name: 'my-cookie', value: 'ALL YOUR BASE ARE BELONG TO US' })
+      res.body.should.containEql({
+        name: 'my-cookie',
+        value: 'ALL YOUR BASE ARE BELONG TO US'
+      })
 
       done()
     })
   })
 
   it('GET /cookie/:name should return specific cookie', function (done) {
-    var req = unirest.get('http://localhost:3000/cookie/my-cookie')
+    const req = unirest.get('http://localhost:3000/cookie/my-cookie')
 
     req.headers({
       Accept: 'application/json',
@@ -220,21 +242,25 @@ describe('HTTP', function () {
   })
 
   it('GET /redirect/:status should redirect 1 time using :status', function (done) {
-    var req = unirest.get('http://localhost:3000/redirect/303')
+    const req = unirest.get('http://localhost:3000/redirect/303')
 
     req.followRedirect(true)
 
     req.maxRedirects(0)
 
     req.end(function (res) {
-      res.error.toString().should.equal('Error: Exceeded maxRedirects. Probably stuck in a redirect loop http://localhost:3000/redirect/303')
+      res.error
+        .toString()
+        .should.equal(
+          'Error: Exceeded maxRedirects. Probably stuck in a redirect loop http://localhost:3000/redirect/303'
+        )
 
       done()
     })
   })
 
   it('GET /redirect/:status/:n should redirect :n times using :status', function (done) {
-    var req = unirest.get('http://localhost:3000/redirect/302/3')
+    const req = unirest.get('http://localhost:3000/redirect/302/3')
 
     req.followRedirect(true)
 
@@ -248,21 +274,27 @@ describe('HTTP', function () {
   })
 
   it('GET /redirect/:status/:n should redirect :n times using :status (verify count)', function (done) {
-    var req = unirest.get('http://localhost:3000/redirect/302/3')
+    const req = unirest.get('http://localhost:3000/redirect/302/3')
 
     req.followRedirect(true)
 
     req.maxRedirects(2)
 
     req.end(function (res) {
-      res.error.toString().should.equal('Error: Exceeded maxRedirects. Probably stuck in a redirect loop http://localhost:3000/redirect/302/1')
+      res.error
+        .toString()
+        .should.equal(
+          'Error: Exceeded maxRedirects. Probably stuck in a redirect loop http://localhost:3000/redirect/302/1'
+        )
 
       done()
     })
   })
 
   it('GET /redirect/:status?to=URL should redirect to URL', function (done) {
-    var req = unirest.get('http://localhost:3000/redirect/308?to=http://mockbin.com/')
+    const req = unirest.get(
+      'http://localhost:3000/redirect/308?to=http://mockbin.com/'
+    )
 
     req.followRedirect(false)
 
